@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         } else if (v == btl_signin){
             String email = etl_email.getText().toString().trim();
             String password = etl_password.getText().toString().trim();
+            
         }
     }
 }
