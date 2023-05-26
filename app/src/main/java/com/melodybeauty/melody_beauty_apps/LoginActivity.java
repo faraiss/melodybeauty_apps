@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.melodybeauty.melody_beauty_apps.AuthServices.AuthServices;
+
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity  implements View.OnClickListener {
@@ -43,7 +45,21 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         } else if (v == btl_signin){
             String email = etl_email.getText().toString().trim();
             String password = etl_password.getText().toString().trim();
-            
+
+            AuthServices.login(LoginActivity.this, email, password, new AuthServices.LoginResponseListener() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Toast.makeText(LoginActivity.this, "Berhasil Login", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(LoginActivity.this, HomepageActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+                @Override
+                public void onError(String message) {
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 }
