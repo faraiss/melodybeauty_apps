@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:id="@+id/popup_box"
+    android:orientation="vertical">
+<FrameLayout
+    android:id="@+id/dialogBox"
+    android:background="@drawable/bg_box"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:fontFamily="@font/lato_black"
+            android:textColor="@color/black"
+            android:layout_marginBottom="20dp"
+            android:text="Perhatian ! "/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            android:layout_marginBottom="20dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:fontFamily="@font/lato_bold"
+            android:textColor="@color/black"
+            android:text="Apakah anda yakin untuk keluar ? "/>
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btl_batal"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Batal"
+                android:fontFamily="@font/lato_regular"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:backgroundTint="@null"
+                android:background="@drawable/custom_btn_batal"/>
+            <Button
+                android:id="@+id/btl_ok"
+                android:layout_marginStart="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Ok"
+                android:fontFamily="@font/lato_regular"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:background="@drawable/custom_btn_ok"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</FrameLayout>
+
+</LinearLayout>
