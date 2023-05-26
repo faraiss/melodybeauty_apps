@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">melody_beauty_apps</string>
+    <string name="melody">melodybeauty</string>
+
+    <style name="MyTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>
