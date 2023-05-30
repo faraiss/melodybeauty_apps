@@ -14,6 +14,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.melodybeauty.melody_beauty_apps.Model.Kategori;
+import com.melodybeauty.melody_beauty_apps.Model.Keluhan;
+import com.melodybeauty.melody_beauty_apps.Model.Konsultasi;
 import com.melodybeauty.melody_beauty_apps.Model.Post;
 import com.melodybeauty.melody_beauty_apps.Model.Product;
 import com.melodybeauty.melody_beauty_apps.Model.Skin;
@@ -88,6 +90,22 @@ public class AuthServices {
         void onSuccess(List<Product> productList);
         void onError(String message);
     }
+    public interface AntrianResponseListener {
+        void onSuccess(String response);
+        void onError(String message);
+    }
+    public interface KeluhanResponseListener {
+        void onSuccess(List<Keluhan> response);
+        void onError(String message);
+    }
+    public interface KonsultasiSelesaiResponseListener {
+        void onSuccess(List<Konsultasi> response);
+        void onError(String message);
+    }
+    public interface KonsultasiBelumSelesaiResponseListener {
+        void onSuccess(List<Konsultasi> response);
+        void onError(String message);
+    }
 
     public static void register(Context context, String name, String email, String password, String jk, String jkulit, String tgl, String no_hp, String alamat, RegisterResponseListener listener) {
 
@@ -146,7 +164,6 @@ public class AuthServices {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
-
     public static void login(Context context, String email, String pass, LoginResponseListener listener) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, API + "signin", new Response.Listener<String>() {
             @Override
@@ -593,5 +610,254 @@ public class AuthServices {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
+    public static void antrian(Context context, String token, String tanggal,String id, String detail, final AntrianResponseListener listener) {
 
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, API + "antrian",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("message");
+                            if (message.equals("success")) {
+                                listener.onSuccess("Berhasil membuat nomor antrian");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            listener.onError("Invalid JSON response");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+//                                JSONObject jsonObject = new JSONObject(responseBody);
+//                                String message = jsonObject.getString("message");
+                                listener.onError("Tidak dapat menambah antrian. Masih ada antrian yang belum selesai.");
+                            } catch ( UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Failed to update photo: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Failed to update: network response is null");
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("tanggal", tanggal);
+                params.put("id_keluhan", id);
+                params.put("detail_keluhan", detail);
+                return params;
+            }
+        };
+
+        Volley.newRequestQueue(context).add(stringRequest);
+    }
+    public static void keluhan(Context context,final KeluhanResponseListener listener) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "keluhan",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("message");
+                            if (message.equals("success")) {
+                                JSONArray jsonArray = jsonObject.getJSONArray("keluhan");
+                                List<Keluhan> keluhans = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject skinObj = jsonArray.getJSONObject(i);
+                                    String id = skinObj.getString("id");
+                                    String name = skinObj.getString("name");
+
+                                    Keluhan keluhan = new Keluhan(id, name);
+                                    keluhans.add(keluhan);
+                                }
+                                listener.onSuccess(keluhans);
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mendapatkan posts: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mendapatkan posts: network response is null");
+                        }
+                    }
+                }
+        ) {
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+    public static void konsultasiselesai(Context context, String token, final KonsultasiSelesaiResponseListener listener) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "konsultasi",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("message");
+                            if (message.equals("success")){
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                List<Konsultasi> konsultasiList = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++){
+                                    JSONObject dataObj = jsonArray.getJSONObject(i);
+                                    JSONObject antrianObj = dataObj.getJSONObject("antrian");
+                                    JSONObject keluhanObj = antrianObj.getJSONObject("keluhan");
+                                    String id = dataObj.getString("id");
+                                    String idAntrian = dataObj.getString("id_antrian");
+                                    String hasil = dataObj.getString("hasil_konsultasi");
+                                    String idUser = antrianObj.getString("id_user");
+                                    String noAntrian = antrianObj.getString("no_antrian");
+                                    String tanggal = antrianObj.getString("tanggal");
+                                    String status = antrianObj.getString("status");
+                                    String detailKeluhan = antrianObj.getString("detail_keluhan");
+                                    String name = keluhanObj.getString("name");
+                                    DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                    DateFormat outputFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+                                    Date date;
+                                    String tgl = "";
+                                    try {
+                                        date = inputFormat.parse(tanggal);
+                                        tgl = outputFormat.format(date);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Konsultasi konsultasi = new Konsultasi(id, idAntrian,hasil,idUser, noAntrian, tgl, status,detailKeluhan,name);
+                                    konsultasiList.add(konsultasi);
+                                }
+                                listener.onSuccess(konsultasiList);
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mendapatkan data user: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mendapatkan data user: network response is null");
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+    public static void konsultasibelumselesai(Context context, String token, final KonsultasiBelumSelesaiResponseListener listener) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "konsultasibs",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("message");
+                            if (message.equals("success")){
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                List<Konsultasi> konsultasiList = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++){
+                                    JSONObject dataObj = jsonArray.getJSONObject(i);
+                                    JSONObject antrianObj = dataObj.getJSONObject("antrian");
+                                    JSONObject keluhanObj = antrianObj.getJSONObject("keluhan");
+                                    String id = dataObj.getString("id");
+                                    String idAntrian = dataObj.getString("id_antrian");
+                                    String hasil = dataObj.getString("hasil_konsultasi");
+                                    String idUser = antrianObj.getString("id_user");
+                                    String noAntrian = antrianObj.getString("no_antrian");
+                                    String tanggal = antrianObj.getString("tanggal");
+                                    String status = antrianObj.getString("status");
+                                    String detailKeluhan = antrianObj.getString("detail_keluhan");
+                                    String name = keluhanObj.getString("name");
+                                    DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                    DateFormat outputFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+                                    Date date;
+                                    String tgl = "";
+                                    try {
+                                        date = inputFormat.parse(tanggal);
+                                        tgl = outputFormat.format(date);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    Konsultasi konsultasi = new Konsultasi(id, idAntrian,hasil,idUser, noAntrian, tgl, status,detailKeluhan,name);
+                                    konsultasiList.add(konsultasi);
+                                }
+                                listener.onSuccess(konsultasiList);
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mendapatkan data user: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mendapatkan data user: network response is null");
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
 }
