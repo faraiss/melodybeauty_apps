@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:layout_margin="50dp"
+    android:id="@+id/popup_box"
+    android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_box"
+        android:padding="20dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Riwayat Konsultasi"
+                android:fontFamily="@font/lato_black"
+                android:textColor="@color/black"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nomor antrian"
+                android:textSize="12sp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/lato_regular"
+                android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/knomer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:fontFamily="@font/lato_black"
+                android:textSize="30sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jenis konsultasi"
+                android:textSize="12sp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/lato_regular"
+                android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/kname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jerawat"
+                android:fontFamily="@font/lato_black"
+                android:textSize="20sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tanggal konsultasi"
+                android:textSize="12sp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/lato_regular"
+                android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/ktanggal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00-0000-0000"
+                android:fontFamily="@font/lato_black"
+                android:textSize="20sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/black"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Detail konsultasi"
+                android:textSize="12sp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/lato_regular"
+                android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="detail konsultasi"
+                android:textSize="11sp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/lato_bold"
+                android:textColor="@color/black"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hasil konsultasi"
+                android:textSize="12sp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/lato_regular"
+                android:textColor="@color/black"/>
+            <TextView
+                android:id="@+id/hasil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hasil konsultasi"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/lato_bold"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+    </FrameLayout>
+    </ScrollView>
+</LinearLayout>

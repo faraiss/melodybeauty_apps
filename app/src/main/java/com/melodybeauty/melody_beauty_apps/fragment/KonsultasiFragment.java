@@ -79,10 +79,11 @@ public class KonsultasiFragment extends Fragment {
     }
 
     private LinearLayout ll_konsultasi;
-    RecyclerView recyclerViewbs;
+    RecyclerView recyclerViewbs, recyclerView;
     List<Konsultasi> konsultasiList = new ArrayList<>();
     CustomAdapterKonsultasi customAdapter;
-    LinearLayoutManager linearLayoutManager;
+    CustomAdapterKonsultasi2 customAdapter2;
+    LinearLayoutManager linearLayoutManager, linearLayoutManager2;
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,11 +93,17 @@ public class KonsultasiFragment extends Fragment {
 
         ll_konsultasi = view.findViewById(R.id.ll_konsultasi);
         recyclerViewbs = view.findViewById(R.id.recyclerbs);
+        recyclerView = view.findViewById(R.id.recyclers);
         linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager2 = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerViewbs.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(linearLayoutManager2);
         recyclerViewbs.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
         linearLayoutManager = (LinearLayoutManager) recyclerViewbs.getLayoutManager();
+        linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         customAdapter = new CustomAdapterKonsultasi(new ArrayList<>(), getContext());
+        customAdapter2 = new CustomAdapterKonsultasi2(new ArrayList<>(), getContext());
 
         //get token user
         SharedPreferences preferences = getActivity().getSharedPreferences("myPrefs", MODE_PRIVATE);
@@ -116,7 +123,20 @@ public class KonsultasiFragment extends Fragment {
                 Log.e("Error", message);
             }
         });
+        AuthServices.konsultasiselesai(getContext(), token, new AuthServices.KonsultasiSelesaiResponseListener() {
+            @Override
+            public void onSuccess(List<Konsultasi> response) {
+                customAdapter2 = new CustomAdapterKonsultasi2(response, getContext());
+                recyclerView.setAdapter(customAdapter2);
+                konsultasiList = response;
+                customAdapter2.notifyDataSetChanged();
+            }
 
+            @Override
+            public void onError(String message) {
+                Log.e("Error", message);
+            }
+        });
         ll_konsultasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,6 +190,84 @@ public class KonsultasiFragment extends Fragment {
                         tvjkonsultasi.setText(konsultasiList.get(pos).getNameKeluhan());
                         tvtgl.setText(konsultasiList.get(pos).getTanggal());
                         tvno.setText(konsultasiList.get(pos).getNoAntrian());
+                    }
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return konsultasiList.size();
+        }
+
+        public void setProductList(List<Konsultasi> konsultasiList) {
+            this.konsultasiList = konsultasiList;
+        }
+
+        public List<Konsultasi> getProductList() {
+            return konsultasiList;
+        }
+
+
+        public static class ViewHolder extends RecyclerView.ViewHolder {
+            TextView namek,tglk,status;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                namek = itemView.findViewById(R.id.kname);
+                tglk = itemView.findViewById(R.id.ktgl);
+                status = itemView.findViewById(R.id.status);
+            }
+        }
+    }
+    public static class CustomAdapterKonsultasi2 extends RecyclerView.Adapter<CustomAdapterKonsultasi2.ViewHolder> {
+        private List<Konsultasi> konsultasiList;
+        private Context context;
+        private LayoutInflater layoutInflater;
+
+        public CustomAdapterKonsultasi2(List<Konsultasi> konsultasiList, Context context) {
+            this.konsultasiList = konsultasiList;
+            this.context = context;
+            this.layoutInflater = LayoutInflater.from(context);
+        }
+
+        @NonNull
+        @Override
+        public CustomAdapterKonsultasi2.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = layoutInflater.inflate(R.layout.item_list_konsultasi, parent, false);
+            return new CustomAdapterKonsultasi2.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull CustomAdapterKonsultasi2.ViewHolder holder, int position) {
+            holder.namek.setText(konsultasiList.get(position).getNameKeluhan());
+            holder.status.setText(konsultasiList.get(position).getStatus());
+            holder.tglk.setText(konsultasiList.get(position).getTanggal());
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("MissingInflatedId")
+                @Override
+                public void onClick(View v) {
+                    int pos = holder.getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        AlertDialog.Builder alert =new AlertDialog.Builder(context);
+                        View alertView =LayoutInflater.from(context).inflate(R.layout.popup_riwayat_konsultasi,
+                                (LinearLayout) v.findViewById(R.id.popup_box));
+                        alert.setView(alertView);
+                        final AlertDialog dialog = alert.create();
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        TextView tvjkonsultasi, tvtgl, tvno, tv_hasil, tv_detail;
+                        tvjkonsultasi = alertView.findViewById(R.id.kname);
+                        tvtgl = alertView.findViewById(R.id.ktanggal);
+                        tvno = alertView.findViewById(R.id.knomer);
+                        tv_hasil = alertView.findViewById(R.id.hasil);
+                        tv_detail = alertView.findViewById(R.id.detail);
+
+                        tvjkonsultasi.setText(konsultasiList.get(pos).getNameKeluhan());
+                        tvtgl.setText(konsultasiList.get(pos).getTanggal());
+                        tvno.setText(konsultasiList.get(pos).getNoAntrian());
+                        tv_hasil.setText(konsultasiList.get(pos).getHasilKonsultasi());
+                        tv_detail.setText(konsultasiList.get(pos).getDetailKeluhan());
                     }
                 }
             });
