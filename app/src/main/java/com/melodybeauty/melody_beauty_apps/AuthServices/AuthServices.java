@@ -13,6 +13,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.melodybeauty.melody_beauty_apps.Model.Kategori;
+import com.melodybeauty.melody_beauty_apps.Model.Post;
+import com.melodybeauty.melody_beauty_apps.Model.Product;
 import com.melodybeauty.melody_beauty_apps.Model.Skin;
 import com.melodybeauty.melody_beauty_apps.Model.User;
 
@@ -67,6 +70,18 @@ public class AuthServices {
     }
     public interface LogoutResponseListener {
         void onSuccess(String message);
+        void onError(String message);
+    }
+    public interface KategoriResponseListener {
+        void onSuccess(List<Kategori> kategoris);
+        void onError(String message);
+    }
+    public interface PostResponseListener {
+        void onSuccess(List<Post> posts);
+        void onError(String message);
+    }
+    public interface ProductResponseListener {
+        void onSuccess(List<Product> productList);
         void onError(String message);
     }
 
@@ -294,6 +309,257 @@ public class AuthServices {
                                     skinList.add(skin);
                                 }
                                 listener.onSuccess(skinList);
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mendapatkan posts: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mendapatkan posts: network response is null");
+                        }
+                    }
+                }
+        ) {
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+    public static void product(Context context,final ProductResponseListener listener) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "productall",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("message");
+                            if (message.equals("success")) {
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                List<Product> productList = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject productObj = jsonArray.getJSONObject(i);
+                                    String id = productObj.getString("id");
+                                    String name = productObj.getString("name");
+                                    String image = productObj.getString("image");
+                                    String desciption = productObj.getString("description");
+                                    String price = productObj.getString("price");
+                                    String idKategori = productObj.getString("id_kategori");
+                                    String jumlahTerjual = productObj.getString("jumlah_terjual");
+                                    String createAtStr = productObj.getString("created_at");
+                                    String updateAtStr = productObj.getString("updated_at");
+
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+                                    Date createAt;
+                                    Date updateAt;
+                                    try {
+                                        createAt = sdf.parse(createAtStr);
+                                        updateAt = sdf.parse(updateAtStr);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                        continue;
+                                    }
+
+                                    Product product = new Product(id, name, image, desciption, price, idKategori, jumlahTerjual, createAt, updateAt);
+                                    productList.add(product);
+
+                                }
+                                listener.onSuccess(productList);
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mendapatkan product: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mendapatkan product: network response is null");
+                        }
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+    //kategori6
+    public static void kategori(Context context, final KategoriResponseListener listener) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "kategori",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String status = jsonObject.getString("status");
+                            if (status.equals("success")) {
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                List<Kategori> kategoriList = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject kategoriObj = jsonArray.getJSONObject(i);
+                                    String id = kategoriObj.getString("id");
+                                    String name = kategoriObj.getString("name");
+
+                                    Kategori kategori = new Kategori(id, name);
+                                    kategoriList.add(kategori);
+                                }
+                                listener.onSuccess(kategoriList);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mendapatkan kategori: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mendapatkan kategori: network response is null");
+                        }
+                    }
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+    //product sesuai kategori
+    public static void kategoriproduct(Context context,String id,final ProductResponseListener listener) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "product/"+ id,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("status");
+                            if (message.equals("success")) {
+                                JSONArray jsonArray = jsonObject.getJSONArray("data");
+                                List<Product> productList = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject productObj = jsonArray.getJSONObject(i);
+                                    String id = productObj.getString("id");
+                                    String name = productObj.getString("name");
+                                    String image = productObj.getString("image");
+                                    String desciption = productObj.getString("description");
+                                    String price = productObj.getString("price");
+                                    String idKategori = productObj.getString("id_kategori");
+                                    String jumlahTerjual = productObj.getString("jumlah_terjual");
+                                    String createAtStr = productObj.getString("created_at");
+                                    String updateAtStr = productObj.getString("updated_at");
+
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+                                    Date createAt;
+                                    Date updateAt;
+                                    try {
+                                        createAt = sdf.parse(createAtStr);
+                                        updateAt = sdf.parse(updateAtStr);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                        continue;
+                                    }
+
+                                    Product product = new Product(id, name, image, desciption, price, idKategori, jumlahTerjual, createAt, updateAt);
+                                    productList.add(product);
+                                }
+                                listener.onSuccess(productList);
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mendapatkan product: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mendapatkan product: network response is null");
+                        }
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+    //post user
+    public static void post(Context context,final PostResponseListener listener) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "posts/user",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("message");
+                            if (message.equals("Data retrieved successfully")) {
+                                JSONArray jsonArray = jsonObject.getJSONArray("posts");
+                                List<Post> postList = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject postObj = jsonArray.getJSONObject(i);
+                                    String id = postObj.getString("id");
+                                    String title = postObj.getString("title");
+                                    String slug = postObj.getString("slug");
+                                    String image = postObj.getString("image");
+                                    String content = postObj.getString("content");
+                                    String dateStr = postObj.getString("date");
+                                    String createAtStr = postObj.getString("created_at");
+                                    String updateAtStr = postObj.getString("updated_at");
+
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+                                    SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    Date createAt;
+                                    Date updateAt;
+                                    Date date;
+                                    try {
+                                        createAt = sdf.parse(createAtStr);
+                                        updateAt = sdf.parse(updateAtStr);
+                                        date = sdf1.parse(dateStr);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                        continue;
+                                    }
+
+                                    Post post = new Post(id, title, slug, image, content, date, createAt, updateAt);
+                                    postList.add(post);
+                                }
+                                listener.onSuccess(postList);
                             }
                         } catch (JSONException e){
                             e.printStackTrace();
