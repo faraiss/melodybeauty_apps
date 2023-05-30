@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|start"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_margin="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_logo"
+            android:clipToOutline="true"
+            android:src="@drawable/img_1"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Melody Beauty"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/lato_bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ruko Mastrip Square Blok C"
+            android:textColor="@color/black"
+            android:fontFamily="@font/lato_regular"
+            android:textSize="11sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+        <ImageView
+            android:id="@+id/pimage"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:src="@drawable/img_1"
+            android:scaleType="centerCrop"
+            />
+        <LinearLayout
+            android:layout_margin="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/price1"
+                android:layout_marginRight="2dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp."
+                android:textColor="@color/black"
+                android:textSize="11sp"
+                android:fontFamily="@font/lato_regular"/>
+            <TextView
+                android:id="@+id/pprice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20000"
+                android:textColor="@color/black"
+                android:textSize="11sp"
+                android:fontFamily="@font/lato_regular"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/coupon"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="2dp"/>
+            <TextView
+                android:id="@+id/pjumlah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20000"
+                android:textColor="@color/black"
+                android:textSize="11sp"
+                android:fontFamily="@font/lato_regular"/>
+            <TextView
+                android:layout_marginLeft="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="terjual"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                android:fontFamily="@font/lato_regular"/>
+
+        </LinearLayout>
+        <TextView
+            android:id="@+id/ptanggal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="25 April 2032"
+            android:fontFamily="@font/lato_regular"
+            android:textColor="@color/black"
+            android:layout_marginBottom="5dp"
+            android:textSize="11sp"/>
+        <TextView
+            android:id="@+id/pname"
+            android:layout_marginStart="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama Product"
+            android:textSize="18sp"
+            android:fontFamily="@font/lato_bold"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/pdesc"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="description title"
+            android:textSize="12sp"
+            android:fontFamily="@font/lato_regular"
+            android:textColor="@color/black"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+
+
+</FrameLayout>

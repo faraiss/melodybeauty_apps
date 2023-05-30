@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment {
 
         int kategoriCount = kategoris.size();
         if (kategoriCount == 3) {
-//            adapter.AddFragment(new FragmentKategori1(kategoris.get(0).getId()), kategoris.get(0).getName());
+            adapter.AddFragment(new FragmentKategori1(kategoris.get(0).getId()), kategoris.get(0).getName());
 //            adapter.AddFragment(new FragmentKategori2(kategoris.get(1).getId()), kategoris.get(1).getName());
 //            adapter.AddFragment(new FragmentKategori3(kategoris.get(2).getId()), kategoris.get(2).getName());
         } else if (kategoriCount == 2) {
