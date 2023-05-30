@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+
 public class AuthServices {
     //connect host url
     private static String HOST = "http://192.168.43.199:8000";
@@ -57,17 +59,23 @@ public class AuthServices {
         return ImageProfile;
     }
 
+    //interface listener register
+    public interface RegisterResponseListener {
+        void onSuccess(JSONObject response);
+        void onError(String message);
+    }
     //interface listener login
     public interface LoginResponseListener {
         void onSuccess(JSONObject response);
         void onError(String message);
     }
-    public interface SkinResponseListener {
-        void onSuccess(List<Skin> response);
+    //interface listener fetch data product
+    public interface ProductResponseListener {
+        void onSuccess(List<Product> productList);
         void onError(String message);
     }
-    public interface RegisterResponseListener {
-        void onSuccess(JSONObject response);
+    public interface UpdatePasswordResponseListener{
+        void onSuccess(String response);
         void onError(String message);
     }
     public interface UserDataResponseListener {
@@ -86,12 +94,16 @@ public class AuthServices {
         void onSuccess(List<Post> posts);
         void onError(String message);
     }
-    public interface ProductResponseListener {
-        void onSuccess(List<Product> productList);
+    public interface UpdateFotoResponseListener {
+        void onSuccess(JSONObject response);
         void onError(String message);
     }
     public interface AntrianResponseListener {
         void onSuccess(String response);
+        void onError(String message);
+    }
+    public interface SkinResponseListener {
+        void onSuccess(List<Skin> response);
         void onError(String message);
     }
     public interface KeluhanResponseListener {
@@ -107,6 +119,7 @@ public class AuthServices {
         void onError(String message);
     }
 
+    //method request menggunakan library volley untuk register user
     public static void register(Context context, String name, String email, String password, String jk, String jkulit, String tgl, String no_hp, String alamat, RegisterResponseListener listener) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, API + "signup", new Response.Listener<String>() {
@@ -164,10 +177,12 @@ public class AuthServices {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
+    //method request menggunakan library volley untuk login user
     public static void login(Context context, String email, String pass, LoginResponseListener listener) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, API + "signin", new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.e("Response", response);
                 try {
                     JSONObject jsonObject = new JSONObject(response);
                     String message = jsonObject.getString("message");
@@ -221,144 +236,7 @@ public class AuthServices {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
-    public static void getUserData(Context context, String token, final UserDataResponseListener listener) {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "userlogin",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String message = jsonObject.getString("message");
-                            if (message.equals("success")){
-                                JSONObject userObj = jsonObject.getJSONObject("user");
-                                String id = userObj.getString("id");
-                                String name = userObj.getString("name");
-                                String image = userObj.getString("image");
-                                String password = userObj.getString("password");
-                                String email = userObj.getString("email");
-                                String jenisKelamin = userObj.getString("jenis_kelamin");
-                                String JenisKulit = userObj.getString("jenis_kulit");
-                                String dateStr = userObj.getString("tanggal_lahir");
-                                String nohp = userObj.getString("no_hp");
-                                String Alamat = userObj.getString("alamat");
-                                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                                DateFormat outputFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
-                                Date date;
-                                String tgl = "";
-                                try {
-                                    date = inputFormat.parse(dateStr);
-                                    tgl = outputFormat.format(date);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                                User user = new User(id, name,image,email,jenisKelamin, JenisKulit, tgl,nohp,Alamat);
-                                listener.onSuccess(user);
-                            }
-                        } catch (JSONException e){
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse != null && error.networkResponse.data != null) {
-                            try {
-                                String responseBody = new String(error.networkResponse.data, "utf-8");
-                                JSONObject jsonObject = new JSONObject(responseBody);
-                                String message = jsonObject.getString("message");
-                                listener.onError(message);
-                            } catch (JSONException | UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                                listener.onError("Gagal mendapatkan data user: " + e.getMessage());
-                            }
-                        } else {
-                            listener.onError("Gagal mendapatkan data user: network response is null");
-                        }
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
-    }
-    public static void logOut(Context context, String token, LogoutResponseListener listener) {
-        StringRequest request = new StringRequest(Request.Method.POST, API + "logout", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                listener.onSuccess(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                listener.onError(error.getMessage());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(request);
-    }
-    public static void skins(Context context,final SkinResponseListener listener) {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "kulit",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String message = jsonObject.getString("message");
-                            if (message.equals("success")) {
-                                JSONArray jsonArray = jsonObject.getJSONArray("skins");
-                                List<Skin> skinList = new ArrayList<>();
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject skinObj = jsonArray.getJSONObject(i);
-                                    String id = skinObj.getString("id");
-                                    String name = skinObj.getString("name");
-
-                                    Skin skin = new Skin(id, name);
-                                    skinList.add(skin);
-                                }
-                                listener.onSuccess(skinList);
-                            }
-                        } catch (JSONException e){
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse != null && error.networkResponse.data != null) {
-                            try {
-                                String responseBody = new String(error.networkResponse.data, "utf-8");
-                                JSONObject jsonObject = new JSONObject(responseBody);
-                                String message = jsonObject.getString("message");
-                                listener.onError(message);
-                            } catch (JSONException | UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                                listener.onError("Gagal mendapatkan posts: " + e.getMessage());
-                            }
-                        } else {
-                            listener.onError("Gagal mendapatkan posts: network response is null");
-                        }
-                    }
-                }
-        ) {
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
-    }
+    //fetch data product
     public static void product(Context context,final ProductResponseListener listener) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "productall",
                 new Response.Listener<String>() {
@@ -424,6 +302,150 @@ public class AuthServices {
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
+    }
+    //update password
+    public static void updatepass(Context context, String token, String pass, final UpdatePasswordResponseListener listener ) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, API + "updatepass",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("message");
+                            if (message.equals("Password updated successfully")){
+                                listener.onSuccess("Password updated successfully");
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mengupdate password: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mengupdate: network response is null");
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("new_password", pass);
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+    //get data user
+    public static void getUserData(Context context, String token, final UserDataResponseListener listener) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "userlogin",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("message");
+                            if (message.equals("success")){
+                                JSONObject userObj = jsonObject.getJSONObject("user");
+                                JSONObject skinObj = userObj.getJSONObject("kulit");
+                                String id = userObj.getString("id");
+                                String name = userObj.getString("name");
+                                String image = userObj.getString("image");
+                                String password = userObj.getString("password");
+                                String email = userObj.getString("email");
+                                String jenisKelamin = userObj.getString("jenis_kelamin");
+                                String JenisKulit = skinObj.getString("name");
+                                String dateStr = userObj.getString("tanggal_lahir");
+                                String nohp = userObj.getString("no_hp");
+                                String Alamat = userObj.getString("alamat");
+                                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                DateFormat outputFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+                                Date date;
+                                String tgl = "";
+                                try {
+                                    date = inputFormat.parse(dateStr);
+                                    tgl = outputFormat.format(date);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                User user = new User(id, name,image,email,jenisKelamin, JenisKulit, tgl,nohp,Alamat);
+                                listener.onSuccess(user);
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mendapatkan data user: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mendapatkan data user: network response is null");
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
+    //logout
+    public static void logOut(Context context, String token, LogoutResponseListener listener) {
+        StringRequest request = new StringRequest(Request.Method.POST, API + "logout", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                listener.onSuccess(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onError(error.getMessage());
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(request);
     }
     //kategori6
     public static void kategori(Context context, final KategoriResponseListener listener) {
@@ -610,6 +632,7 @@ public class AuthServices {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
+
     public static void antrian(Context context, String token, String tanggal,String id, String detail, final AntrianResponseListener listener) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, API + "antrian",
@@ -665,6 +688,55 @@ public class AuthServices {
 
         Volley.newRequestQueue(context).add(stringRequest);
     }
+    public static void skins(Context context,final SkinResponseListener listener) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "kulit",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String message = jsonObject.getString("message");
+                            if (message.equals("success")) {
+                                JSONArray jsonArray = jsonObject.getJSONArray("skins");
+                                List<Skin> skinList = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject skinObj = jsonArray.getJSONObject(i);
+                                    String id = skinObj.getString("id");
+                                    String name = skinObj.getString("name");
+
+                                    Skin skin = new Skin(id, name);
+                                    skinList.add(skin);
+                                }
+                                listener.onSuccess(skinList);
+                            }
+                        } catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (JSONException | UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                                listener.onError("Gagal mendapatkan posts: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Gagal mendapatkan posts: network response is null");
+                        }
+                    }
+                }
+        ) {
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
+    }
     public static void keluhan(Context context,final KeluhanResponseListener listener) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "keluhan",
                 new Response.Listener<String>() {
@@ -714,6 +786,7 @@ public class AuthServices {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
+
     public static void konsultasiselesai(Context context, String token, final KonsultasiSelesaiResponseListener listener) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "konsultasi",
                 new Response.Listener<String>() {
