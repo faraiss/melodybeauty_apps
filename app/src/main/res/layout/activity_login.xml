@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="15dp"
-    tools:context=".LoginActivity"
-    android:background="@drawable/gradient_45">
+    tools:context=".LoginActivity">
 
     <ImageView
         android:id="@+id/iv_back"
@@ -68,16 +67,16 @@
         android:textColor="@color/black"
         android:textColorHighlight="@color/cardview_dark_background"
         android:layout_marginTop="15dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginRight="20dp"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        android:fontFamily="@font/lato_regular"
-        android:layout_marginTop="10dp"
-        android:text="forgot password ?"/>
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="end"-->
+    <!--        android:layout_marginRight="20dp"-->
+    <!--        android:textColor="@color/black"-->
+    <!--        android:textSize="12sp"-->
+    <!--        android:fontFamily="@font/lato_regular"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:text="forgot password ?"/>-->
     <Button
         android:id="@+id/btl_signin"
         android:layout_marginTop="50dp"
@@ -89,6 +88,29 @@
         android:fontFamily="@font/lato_bold"
         android:text="Sign In"
         android:textSize="14sp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:text="don't have an account ? "
+            android:fontFamily="@font/lato_regular"/>
+        <TextView
+            android:id="@+id/tv_sign_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/gradient1"
+            android:text="Sign Up"
+            android:fontFamily="@font/lato_bold"/>
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

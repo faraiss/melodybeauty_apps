@@ -2,6 +2,7 @@ package com.melodybeauty.melody_beauty_apps;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,13 +16,13 @@ import com.melodybeauty.melody_beauty_apps.AuthServices.AuthServices;
 
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity  implements View.OnClickListener {
-
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     ImageView iv_back;
     TextView tv_signup;
     Button btl_signin;
     EditText etl_email, etl_password;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,9 +32,12 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         etl_email = findViewById(R.id.etl_email);
         etl_password = findViewById(R.id.etl_password);
         btl_signin = findViewById(R.id.btl_signin);
+        tv_signup = findViewById(R.id.tv_sign_up);
 
         iv_back.setOnClickListener(this);
         btl_signin.setOnClickListener(this);
+        tv_signup.setOnClickListener(this);
+
     }
 
     @Override
@@ -60,6 +64,9 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                 }
             });
+        } else {
+            Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(i);
         }
     }
 }
