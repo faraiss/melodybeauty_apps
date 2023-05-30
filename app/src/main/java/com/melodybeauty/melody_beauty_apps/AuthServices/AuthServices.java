@@ -40,6 +40,7 @@ public class AuthServices {
     private static String API = HOST + "/api/";
     private static String ImageProduct = HOST + "/foto/product/";
     private static String ImagePost = HOST + "/foto/post/";
+    private static String ImageProfile = HOST + "/foto/user/";
 
     public static String getImageProduct() {
         return ImageProduct;
@@ -49,6 +50,9 @@ public class AuthServices {
 
     public static String getImagePost() {
         return ImagePost;
+    }
+    public static String getImageUser() {
+        return ImageProfile;
     }
 
     //interface listener login

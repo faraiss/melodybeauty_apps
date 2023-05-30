@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".DetailProfile">
+
+    <ImageView
+        android:id="@+id/pictUser"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/bg_user"
+        android:clipToOutline="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        />
+    <EditText
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/etl_email"
+        android:background="@drawable/custom_edit_text"
+        android:drawableLeft="@drawable/ic_baseline_mail_24"
+        android:drawablePadding="8dp"
+        android:hint="Email"
+        android:padding="8dp"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="12sp"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/cardview_dark_background"
+        android:layout_marginTop="50dp"/>
+</LinearLayout>
