@@ -33,4 +33,98 @@
         android:textColor="@color/black"
         android:textColorHighlight="@color/cardview_dark_background"
         android:layout_marginTop="50dp"/>
+    <EditText
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/etl_name"
+        android:background="@drawable/custom_edit_text"
+        android:drawableLeft="@drawable/ic_baseline_person_3_24"
+        android:drawablePadding="8dp"
+        android:hint="Name"
+        android:padding="8dp"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="12sp"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/cardview_dark_background"
+        android:layout_marginTop="15dp"/>
+    <EditText
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/etl_tanggallahir"
+        android:background="@drawable/custom_edit_text"
+        android:drawableLeft="@drawable/ic_baseline_date_range_24"
+        android:drawablePadding="8dp"
+        android:hint="Klik untuk mengatur tanggal lahir"
+        android:padding="8dp"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="12sp"
+        android:inputType="none"
+        android:textColor="@color/black"
+        android:layout_marginTop="15dp"
+        android:textColorHighlight="@color/cardview_dark_background"
+        android:clickable="false"
+        android:focusable="false"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_marginHorizontal="20dp"
+        android:background="@drawable/custom_edit_text">
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"/>
+    </FrameLayout>
+    <EditText
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/etl_no_hp"
+        android:background="@drawable/custom_edit_text"
+        android:drawableLeft="@drawable/ic_baseline_phone_24"
+        android:drawablePadding="8dp"
+        android:hint="Nomer Hp"
+        android:padding="8dp"
+        android:longClickable="false"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="12sp"
+        android:inputType="number"
+        android:textColor="@color/black"
+        android:layout_marginTop="15dp"
+        android:textColorHighlight="@color/cardview_dark_background" />
+    <EditText
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/etl_alamat"
+        android:background="@drawable/custom_edit_text"
+        android:drawableLeft="@drawable/ic_baseline_location_on_24"
+        android:drawablePadding="8dp"
+        android:hint="Alamat"
+        android:padding="8dp"
+        android:longClickable="false"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="12sp"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:layout_marginTop="15dp"
+        android:textColorHighlight="@color/cardview_dark_background" />
+    <Button
+        android:id="@+id/bt_simpan"
+        android:layout_marginTop="40dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/custom_button"
+        android:textAllCaps="false"
+        android:fontFamily="@font/lato_bold"
+        android:text="Simpan Perubahan"
+        android:textSize="14sp"/>
 </LinearLayout>

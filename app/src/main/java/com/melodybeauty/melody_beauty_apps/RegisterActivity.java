@@ -129,8 +129,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 // Tangani kesalahan
             }
         });
-
-
     }
 
     @Override
@@ -194,7 +192,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
             DatePickerDialog dialog = new DatePickerDialog(RegisterActivity.this,
-                    androidx.appcompat.R.style.ThemeOverlay_AppCompat_Dialog,
+                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                     mDate, year,month,day);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
@@ -208,7 +206,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         int radioInt = rg_jk.getCheckedRadioButtonId();
         rb_jk = findViewById(radioInt);
     }
-    public class SkinSpinnerAdapter extends ArrayAdapter<Skin> {
+    public static class SkinSpinnerAdapter extends ArrayAdapter<Skin> {
 
         private LayoutInflater inflater;
         private List<Skin> skinList;

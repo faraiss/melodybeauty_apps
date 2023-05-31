@@ -12,6 +12,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.melodybeauty.melody_beauty_apps.Model.Kategori;
@@ -116,6 +117,10 @@ public class AuthServices {
     }
     public interface KonsultasiBelumSelesaiResponseListener {
         void onSuccess(List<Konsultasi> response);
+        void onError(String message);
+    }
+    public interface UpdateProfileResponseListener {
+        void onSuccess(JSONObject response);
         void onError(String message);
     }
 
@@ -373,6 +378,7 @@ public class AuthServices {
                                 String password = userObj.getString("password");
                                 String email = userObj.getString("email");
                                 String jenisKelamin = userObj.getString("jenis_kelamin");
+                                String idKulit = userObj.getString("id_kulit");
                                 String JenisKulit = skinObj.getString("name");
                                 String dateStr = userObj.getString("tanggal_lahir");
                                 String nohp = userObj.getString("no_hp");
@@ -387,7 +393,7 @@ public class AuthServices {
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
-                                User user = new User(id, name,image,email,jenisKelamin, JenisKulit, tgl,nohp,Alamat);
+                                User user = new User(id, name,image,email,jenisKelamin,idKulit, JenisKulit, tgl,nohp,Alamat);
                                 listener.onSuccess(user);
                             }
                         } catch (JSONException e){
@@ -632,7 +638,6 @@ public class AuthServices {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
-
     public static void antrian(Context context, String token, String tanggal,String id, String detail, final AntrianResponseListener listener) {
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, API + "antrian",
@@ -786,7 +791,6 @@ public class AuthServices {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
-
     public static void konsultasiselesai(Context context, String token, final KonsultasiSelesaiResponseListener listener) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, API + "konsultasi",
                 new Response.Listener<String>() {
@@ -933,4 +937,65 @@ public class AuthServices {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
+    public static void updateProfile(Context context, String token, String name, String email, String id_kulit, String tanggal_lahir, String nohp, String alamat, final UpdateProfileResponseListener listener) {
+        String url = API + "updateprofile";
+
+        JSONObject params = new JSONObject();
+        try {
+            params.put("name", name);
+            params.put("email", email);
+            params.put("id_kulit", id_kulit);
+            params.put("tanggal_lahir", tanggal_lahir);
+            params.put("no_hp", nohp);
+            params.put("alamat", alamat);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String message = response.getString("message");
+                            if (message.equals("Profile updated successfully")) {
+                                JSONObject userObj = response.getJSONObject("user");
+                                listener.onSuccess(userObj);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            listener.onError("Invalid JSON response");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "utf-8");
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String message = jsonObject.getString("message");
+                                listener.onError(message);
+                            } catch (UnsupportedEncodingException | JSONException e) {
+                                e.printStackTrace();
+                                listener.onError("Failed to update profile: " + e.getMessage());
+                            }
+                        } else {
+                            listener.onError("Failed to update: network response is null");
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        Volley.newRequestQueue(context).add(jsonObjectRequest);
+    }
+
+
 }

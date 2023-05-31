@@ -149,17 +149,23 @@ public class AddKonsultasiActivity extends AppCompatActivity {
                     String tanggal = outputFormat.format(date);
                     SharedPreferences preferences = AddKonsultasiActivity.this.getSharedPreferences("myPrefs", MODE_PRIVATE);
                     String token = preferences.getString("token", "");
-                    AuthServices.antrian(getApplicationContext(), token, tanggal,selectedId,detail, new AuthServices.AntrianResponseListener() {
-                        @Override
-                        public void onSuccess(String response) {
-                            Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
-                        }
+                    if (formattedDate.equals("")) {
+                        Toast.makeText(getApplicationContext(), "Silahkan masukkan tanggal", Toast.LENGTH_SHORT).show();
+                    } else if (detail.isEmpty()) {
+                        Toast.makeText(getApplicationContext(), "Silahkan masukkan detail keluhan anda", Toast.LENGTH_SHORT).show();
+                    } else {
+                        AuthServices.antrian(getApplicationContext(), token, tanggal, selectedId, detail, new AuthServices.AntrianResponseListener() {
+                            @Override
+                            public void onSuccess(String response) {
+                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                            }
 
-                        @Override
-                        public void onError(String message) {
-                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                        }
-                    });
+                            @Override
+                            public void onError(String message) {
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
