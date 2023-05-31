@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -158,6 +159,9 @@ public class AddKonsultasiActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(String response) {
                                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                                Intent i = new Intent(AddKonsultasiActivity.this, HomepageActivity.class);
+                                startActivity(i);
+                                finish();
                             }
 
                             @Override
