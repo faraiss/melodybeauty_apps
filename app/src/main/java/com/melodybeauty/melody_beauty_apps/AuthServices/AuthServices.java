@@ -149,16 +149,24 @@ public class AuthServices {
                     public void onErrorResponse(VolleyError error) {
                         if (error.networkResponse != null && error.networkResponse.data != null) {
                             try {
+                                int statusCode = error.networkResponse.statusCode;
                                 String responseBody = new String(error.networkResponse.data, "utf-8");
-                                JSONObject jsonObject = new JSONObject(responseBody);
-                                String message = jsonObject.getString("message");
-                                if (message.equals("Email sudah terdaftar")) {
-                                    listener.onError("Email sudah terdaftar , Silahkan gunakan email yang lain");
+                                if (statusCode == 400) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(responseBody);
+                                        String message = jsonObject.getString("message");
+                                        if (message.equals("Email sudah terdaftar")) {
+                                            listener.onError("Email sudah terdaftar , Silahkan gunakan email yang lain");
+                                        }
+                                    } catch (JSONException  e) {
+                                        e.printStackTrace();
+                                        listener.onError("Gagal register: " + e.getMessage());
+                                    }
                                 }
-                            } catch (JSONException | UnsupportedEncodingException e) {
+                            } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
-                                listener.onError("Gagal register: " + e.getMessage());
                             }
+
                         } else {
                             listener.onError("Gagal register: network response is null");
                         }
@@ -210,19 +218,27 @@ public class AuthServices {
                     public void onErrorResponse(VolleyError error) {
                         if (error.networkResponse != null && error.networkResponse.data != null) {
                             try {
+                                int statusCode = error.networkResponse.statusCode;
                                 String responseBody = new String(error.networkResponse.data, "utf-8");
-                                JSONObject jsonObject = new JSONObject(responseBody);
-                                String message = jsonObject.getString("message");
-                                if (message.equals("incorrect email")) {
-                                    listener.onError("Email Anda Belum Terdaftar");
-                                } else if (message.equals("incorrect password")) {
-                                    listener.onError("Password Anda Salah");
+                                if (statusCode == 401) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(responseBody);
+                                        String message = jsonObject.getString("message");
+                                        if (message.equals("incorrect email")) {
+                                            listener.onError("Email Anda Belum Terdaftar");
+                                        } else if (message.equals("incorrect password")) {
+                                            listener.onError("Password Anda Salah");
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        listener.onError("Gagal Login: " + e.getMessage());
+                                    }
+
                                 }
-                            } catch (JSONException | UnsupportedEncodingException e) {
+                            }catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
-                                listener.onError("Gagal Login: " + e.getMessage());
                             }
-                        }
+                                                   }
                         else{
                             listener.onError("Gagal Login: network response is null");
                             Log.e("AuthServices", "Error: " + error.getMessage());
